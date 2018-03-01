@@ -10,6 +10,10 @@ set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project("Potato's Destiny_cw")
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+project("Potato's Destiny_cw")
 
 #### Setup Directories ####
 #Main output directory
