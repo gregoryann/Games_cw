@@ -3,6 +3,8 @@
 #include "engine.h"
 
 class MenuScene : public Scene {
+private:
+	sf::Vector2f posMenuItems[3];
 public:
   MenuScene() = default;
   ~MenuScene() override = default;
