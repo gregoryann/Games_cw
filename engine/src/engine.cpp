@@ -13,6 +13,7 @@ using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
 
+
 static bool loading = false;
 static float loadingspinner = 0.f;
 static float loadingTime;
@@ -165,6 +166,7 @@ void Scene::setLoaded(bool b) {
 
 void Scene::UnLoad() {
   ents.list.clear();
+  textures->clear();
   setLoaded(false);
 }
 
@@ -192,3 +194,4 @@ long long last() {
 } // namespace timing
 
 Scene::~Scene() { UnLoad(); }
+Scene::Scene() : textures(make_shared<vector<Texture>>()) {}

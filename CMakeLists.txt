@@ -66,7 +66,7 @@ target_include_directories(rapidjson INTERFACE "${CMAKE_SOURCE_DIR}/lib/rapidjso
 #### Add Practical Projects####
 
 ## coursework
-file(GLOB_RECURSE SOURCES pdsrc/*.cpp pdsrc/*.h)
+file(GLOB_RECURSE SOURCES pdsrc/*.cpp pdsrc/*.h pdsrc/*.hpp)
 file(GLOB_RECURSE CMPNTS pdsrc/components/*.cpp pdsrc/components/*.h)
 file(GLOB_RECURSE SCENES pdsrc/scenes/*.cpp pdsrc/scenes/*.h)
 add_executable(pd ${SOURCES} ${RESOURCE_FILES})

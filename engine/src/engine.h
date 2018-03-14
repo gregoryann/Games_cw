@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
 #include <ecm.h>
 #include <future>
 #include <maths.h>
@@ -8,7 +9,7 @@
 
 class Scene {
 public:
-  Scene() = default;
+  Scene();
   virtual ~Scene();
   virtual void Load() = 0;
   virtual void LoadAsync();
@@ -19,7 +20,7 @@ public:
   std::shared_ptr<Entity> makeEntity();
 
   EntityManager ents;
-
+  std::shared_ptr<std::vector<sf::Texture>> textures;
 protected:
   void setLoaded(bool);
 private:

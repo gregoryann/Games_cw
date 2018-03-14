@@ -44,6 +44,7 @@ class Entity {
 protected:
   std::vector<std::shared_ptr<Component>> _components;
   sf::Vector2f _position;
+  std::string _state;
   float _rotation;
   bool _alive;       // should be updated
   bool _visible;     // should be rendered
@@ -53,6 +54,7 @@ protected:
 public:
   void addTag(const std::string& t);
   const std::set<std::string>& getTags() const;
+  const std::string& getState() const;
   Scene* const scene;
   Entity(Scene* const s);
 
@@ -62,7 +64,7 @@ public:
 
   virtual void render();
 
-  //
+  
   const sf::Vector2f& getPosition() const;
 
   void setPosition(const sf::Vector2f& _position);
