@@ -19,6 +19,5 @@ before_build:
     cmake -G "Visual Studio 15 2017 Win64" ../
     
 build:
-  project: build/PACKAGE.vcxproj
   parallel: true
   verbosity: minimal
