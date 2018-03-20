@@ -2,8 +2,8 @@
 #pragma once
 
 #include "scenes/scene_level1.h"
-#include "scenes/scene_level2.h"
-#include "scenes/scene_level3.h"
+//#include "scenes/scene_level2.h"
+//#include "scenes/scene_level3.h"
 #include "scenes/scene_menu.h"
 
 extern MenuScene menu;

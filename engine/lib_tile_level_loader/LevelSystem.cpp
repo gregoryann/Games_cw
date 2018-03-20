@@ -32,6 +32,9 @@ void LevelSystem::loadLevelFileJson(const std::string & path)
 	_tiles = std::make_unique<TILES[]>(helper->_json.columns_map * helper->_json.rows_map);
 	
 	std::copy(temp_tiles.begin(), temp_tiles.end(), &_tiles[0]);
+	/*for (int i = 0; i < 400; i++) {
+		cout << _tiles[i] << endl;
+	}*/
 	
 	
 			//shared_ptr<RectangleShape> _sprite = make_shared<RectangleShape>();
@@ -137,7 +140,7 @@ void LevelSystem::buildSprites() {
 		s->setTexture(&_texture);
 		s->setTextureRect(t.rect);
 		
-		_sprites.push_back(move(s));
+		_sprites.push_back(std::move(s));
 	}
 	
 
@@ -254,9 +257,9 @@ LevelSystem::TILES LevelSystem::getTile(sf::Vector2ul p) {//base 0. first row, c
   return _tiles[(p.y * helper->_json.columns_map) + p.x];
 }
 
-size_t LevelSystem::getWidth() { return _width; }
+size_t LevelSystem::getWidth() { return helper->_json.columns_map * helper->_json.tileWidth_map; }
 
-size_t LevelSystem::getHeight() { return _height; }
+size_t LevelSystem::getHeight() { return helper->_json.rows_map * helper->_json.tileHeight_map; }
 
 sf::Vector2f LevelSystem::getTilePosition(sf::Vector2ul p) {
   return (Vector2f(p.x * helper->_json.tileWidth_map, p.y * helper->_json.tileHeight_map)) + _offset;
@@ -266,7 +269,7 @@ std::vector<sf::Vector2ul> LevelSystem::findTiles(LevelSystem::TILES type) {
   auto v = vector<sf::Vector2ul>();
   for (size_t i = 0; i < helper->_json.columns_map * helper->_json.rows_map; ++i) {
     if (_tiles[i] == type) {
-      v.push_back({i % _width, i / _width});
+      v.push_back({i % helper->_json.columns_map, i / helper->_json.columns_map });
     }
   }
 

@@ -42,10 +42,12 @@ void PlayerPhysicsComponent::update(double dt) {
       Keyboard::isKeyPressed(Keyboard::Right)) {
     // Moving Either Left or Right
     if (Keyboard::isKeyPressed(Keyboard::Right)) {
-      if (getVelocity().x < _maxVelocity.x)
+		
+      if (getVelocity().x < _maxVelocity.x && (pos.x + dt * _groundspeed) < ls::getWidth())
         impulse({(float)(dt * _groundspeed), 0});
     } else {
-      if (getVelocity().x > -_maxVelocity.x)
+		cout << (pos.x - dt * _groundspeed) << endl;
+      if ((getVelocity().x > -_maxVelocity.x) && ((pos.x - dt * _groundspeed) > 50.0f))//assuming map starts at pos 0
         impulse({-(float)(dt * _groundspeed), 0});
     }
   } else {

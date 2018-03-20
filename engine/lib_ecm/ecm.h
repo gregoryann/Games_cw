@@ -43,7 +43,7 @@ class Entity {
 
 protected:
   std::vector<std::shared_ptr<Component>> _components;
-  sf::Vector2f _position;
+  sf::Vector2f _position;//it's the central position (not top left)
   std::string _state;
   float _rotation;
   bool _alive;       // should be updated
