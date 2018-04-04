@@ -5,6 +5,8 @@
 #include <LevelSystem.h>
 #include <iostream>
 #include <thread>
+#include <SFML\Graphics\View.hpp>
+#include "system_renderer.h"
 
 using namespace std;
 using namespace sf;
@@ -13,11 +15,11 @@ static shared_ptr<Entity> player;
 static shared_ptr<Entity> coin;
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
-  ls::loadLevelFileJson("res/levels/level1.json");
+  ls::loadLevelFileJson("res/levels/untitled100.json");
 
   auto ho = Engine::getWindowSize().y - (ls::getHeight() * 40.f);
   ls::setOffset(Vector2f(0, 0));//TODO:check how to use offset (before was set to ho)
-
+ 
   // Create player
   {
     player = makeEntity();
@@ -29,6 +31,10 @@ void Level1Scene::Load() {
 	
 
     player->addComponent<PlayerPhysicsComponent>(Vector2f(20.f, 30.f));
+	
+	//set view to center on player
+	Renderer::view.reset(sf::FloatRect(player->getPosition().x, player->getPosition().y, 1280.0f, 800.f));
+	
   }
 
   // Add coins
@@ -91,6 +97,10 @@ void Level1Scene::Update(const double& dt) {
  /* if (coin->get_components<PhysicsComponent>()[0]->isTouching(*player->get_components<PlayerPhysicsComponent>()[0])) {
 	  cout << "yes they are !" << endl;
   }*/
+  //cout << getView().getCenter() << endl;
+  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y));
+  cout << &Renderer::view << " lv1"<< endl;
+  cout << Renderer::view.getCenter() << " lv1" << endl;
   Scene::Update(dt);
 }
 

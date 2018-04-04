@@ -142,6 +142,12 @@ void Scene::Update(const double& dt) { ents.update(dt); }
 
 void Scene::Render() { ents.render(); }
 
+sf::View* Scene::getView()
+{
+	cout << &Renderer::view << " get view"<< endl;
+	return &Renderer::view;
+}
+
 bool Scene::isLoaded() const {
   {
     std::lock_guard<std::mutex> lck(_loaded_mtx);
