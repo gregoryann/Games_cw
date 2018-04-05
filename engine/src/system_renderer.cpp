@@ -14,6 +14,7 @@ static RenderWindow* rw;
 
 void Renderer::initialise(sf::RenderWindow& r) { 
 	rw = &r; 
+	view = rw->getDefaultView();
 }
 
 void Renderer::shutdown() {
@@ -25,10 +26,8 @@ void Renderer::update(const double&) {}
 
 void Renderer::render() {
 	
-	
 	rw->setView(view);
-	cout << &Renderer::view << " renderer"<< endl;
-	cout << view.getCenter() << endl;
+	
   if (rw == nullptr) {
     throw("No render window set! ");
   }

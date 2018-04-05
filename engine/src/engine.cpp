@@ -12,7 +12,7 @@ using namespace sf;
 using namespace std;
 Scene* Engine::_activeScene = nullptr;
 std::string Engine::_gameName;
-
+sf::View Renderer::view;
 
 static bool loading = false;
 static float loadingspinner = 0.f;

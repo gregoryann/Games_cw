@@ -1,6 +1,7 @@
 #include "engine.h"
 #include "game.h"
 #include "scenes/scene_menu.h"
+#include "system_renderer.h"
 
 using namespace std;
 
@@ -10,6 +11,6 @@ Level1Scene level1;
 //Level3Scene level3;
 
 int main() {
-  Engine::Start(1280, 800, "Potato's Destiny",&level1);
+  Engine::Start(1280, 800, "Potato's Destiny",&menu);
 
 }

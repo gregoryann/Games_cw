@@ -14,5 +14,5 @@ void queue(const sf::Drawable* s);
 
 void render();
 
-static sf::View view;
+extern sf::View view;
 }; // namespace Renderer

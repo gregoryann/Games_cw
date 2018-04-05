@@ -13,6 +13,8 @@ using namespace sf;
 
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> coin;
+
+
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
   ls::loadLevelFileJson("res/levels/untitled100.json");
@@ -98,9 +100,10 @@ void Level1Scene::Update(const double& dt) {
 	  cout << "yes they are !" << endl;
   }*/
   //cout << getView().getCenter() << endl;
-  Renderer::view.setCenter(Vector2f(player->getPosition().x, player->getPosition().y));
-  cout << &Renderer::view << " lv1"<< endl;
-  cout << Renderer::view.getCenter() << " lv1" << endl;
+  Vector2f pos1 = Vector2f(player->getPosition().x, player->getPosition().y);
+  Renderer::view.setCenter(pos1);
+  /*cout << &Renderer::view << " lv1"<< endl;
+  cout << Renderer::view.getCenter() << " lv1" << endl;*/
   Scene::Update(dt);
 }
 
