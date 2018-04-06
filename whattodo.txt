@@ -1,0 +1,9 @@
+Games Eng CW what to do:
+-Find sound effects and add them. They should be free and from usable source: they should have a licence to be used freely.(they are listed in the gdd)
+-create map lv1 using tiled
+-check for contact player and coins so they can be added to the total coin
+-check for contact player and key
+-add points top left screen
+-add lives on screen
+
+
