@@ -1,6 +1,8 @@
-
 #include "system_physics.h"
 #include "Box2D/Box2D.h"
+#include "ecm.h"
+#include "engine.h"
+
 
 using namespace std;
 using namespace sf;
@@ -9,12 +11,15 @@ namespace Physics {
 static shared_ptr<b2World> world;
 const int32 velocityIterations = 6;
 const int32 positionIterations = 2;
+//set contact listener in a global scope (atm is here as static in engine)
+static my_contact_listener contactListenerInstance;
 
 void initialise() {
   b2Vec2 gravity(0.0f, -10.0f);
   // Construct a world object, which will hold and simulate the rigid
   // bodies.
   world.reset(new b2World(gravity));
+  world->SetContactListener(&contactListenerInstance);
 }
 
 void shutdown() { world.reset(); }
@@ -45,3 +50,26 @@ const Vector2f invert_height(const Vector2f& in) {
   return Vector2f(in.x, 720 - in.y);
 }
 } // namespace Physics
+
+
+
+//contact listener
+void my_contact_listener::BeginContact(b2Contact* contact)
+{
+	//TODO: clean with the user data when finished!
+	//get fixture A body
+	Entity* entityA = static_cast<Entity*>(contact->GetFixtureA()->GetBody()->GetUserData());
+	//get fixture B body
+	Entity* entityB = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
+	if (entityA != NULL && entityB != NULL) {
+		CollisionHandler::startContact(entityA, entityB);
+		//entityA->get_components<CollisionComponent>()[0];
+		entityB;
+	}
+	
+}
+
+void my_contact_listener::EndContact(b2Contact* contact)
+{
+}
+

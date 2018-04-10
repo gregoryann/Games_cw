@@ -38,6 +38,15 @@ struct EntityManager {
   find(const std::vector<std::string>& tags) const;
 };
 
+enum EntityType
+{
+	WALL,
+	PLAYER,
+	COIN, 
+	BULLET,
+	KEY,
+	SCORE
+};
 class Entity {
   friend struct EntityManager;
 
@@ -49,14 +58,19 @@ protected:
   bool _alive;       // should be updated
   bool _visible;     // should be rendered
   bool _fordeletion; // should be deleted
+  const bool _dynamic; // should be moved around while player moves
   std::set<std::string> _tags;
 
+
 public:
+//**testing
+	EntityType entityType;
+	//**
   void addTag(const std::string& t);
   const std::set<std::string>& getTags() const;
   const std::string& getState() const;
   Scene* const scene;
-  Entity(Scene* const s);
+  Entity(Scene* const s, bool dynamic);
 
   virtual ~Entity();
 
@@ -76,6 +90,8 @@ public:
   void setRotation(float _rotation);
 
   bool isAlive() const;
+
+  bool isDynamic() const;
 
   void setAlive(bool _alive);
 

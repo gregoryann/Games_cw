@@ -13,7 +13,7 @@ void SpriteComponent::update(double dt) {
 	_sprite->setRotation(_parent->getRotation());
 }
 
-void SpriteComponent::render() { Renderer::queue(_sprite.get()); }
+void SpriteComponent::render() { Renderer::queue(_sprite.get(), _parent->isDynamic()); }
 
 
 //shape
@@ -25,7 +25,7 @@ void ShapeComponent::update(double dt) {
 
 void ShapeComponent::render() {
 
-	Renderer::queue(_shape.get());
+	Renderer::queue(_shape.get(), _parent->isDynamic());
 }
 
 sf::Shape& ShapeComponent::getShape() const { return *_shape; }
@@ -65,7 +65,7 @@ void SpriteComponentAnimated::update(double dt)
 
 void SpriteComponentAnimated::render()
 {
-	Renderer::queue(_sprite.get());
+	Renderer::queue(_sprite.get(), _parent->isDynamic());
 }
 
 AnimatedSprite & SpriteComponentAnimated::getSprite() const

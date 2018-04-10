@@ -4,9 +4,10 @@
 
 void TextComponent::update(double dt) {
 	_text.setPosition(_parent->getPosition());
+	
 }
 
-void TextComponent::render() { Renderer::queue(&_text); }
+void TextComponent::render() { Renderer::queue(&_text, _parent->isDynamic()); }
 
 TextComponent::TextComponent(Entity* const p, const std::string& str)
     : Component(p), _string(str) {

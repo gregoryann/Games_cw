@@ -40,6 +40,11 @@ PhysicsComponent::PhysicsComponent(Entity* p, bool dyn,
     //_fixture->SetRestitution(.9)
     FixtureDef.restitution = .2;
   }
+  //**TESTING 
+  
+  _body->SetUserData(p);
+  Entity* ent = static_cast<Entity*>(_body->GetUserData());
+  //*
 
   // An ideal Pod/capusle shape should be used for hte player,
   // this isn't built into B2d, but we can combine two shapes to do so.
@@ -107,24 +112,24 @@ void PhysicsComponent::dampen(const sf::Vector2f& i) {
   _body->SetLinearVelocity(vel);
 }
 
-bool PhysicsComponent::isTouching(const PhysicsComponent& pc) const {
-	b2Contact* bc;
-  return isTouching(pc, bc);
-}
+//bool PhysicsComponent::isTouching(const PhysicsComponent& pc) const {
+//	//b2Contact* bc;
+//  return isTouching(pc);
+//}
 
-bool PhysicsComponent::isTouching(const PhysicsComponent& pc,
-                                  b2Contact const* bc) const {
+bool PhysicsComponent::isTouching(const PhysicsComponent& pc) const {
   const auto _otherFixture = pc.getFixture();
   const auto& w = *Physics::GetWorld();
   const auto contactList = w.GetContactList();
   const auto clc = w.GetContactCount();
   for (int32 i = 0; i < clc; i++) {
     const auto& contact = (contactList[i]);
-    if (contact.IsTouching() && ((contact.GetFixtureA() == _fixture &&
-                                  contact.GetFixtureA() == _otherFixture) ||
-                                 (contact.GetFixtureA() == _otherFixture &&
-                                  contact.GetFixtureA() == _fixture))) {
-      bc = &contact;
+    if (contact.IsTouching() && ((contact.GetFixtureA() == _fixture ||
+                                  contact.GetFixtureA() == _otherFixture) &&
+                                 (contact.GetFixtureB() == _otherFixture ||
+                                  contact.GetFixtureB() == _fixture))) {
+      //bc = &contact;
+		
       return true;
     }
   }

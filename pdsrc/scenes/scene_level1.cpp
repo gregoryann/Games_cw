@@ -1,19 +1,22 @@
 #include "scene_level1.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
+#include "../components/cmp_coin_collision.h"
+#include "../components/cmp_text.h"
 #include "../game.h"
 #include <LevelSystem.h>
 #include <iostream>
 #include <thread>
 #include <SFML\Graphics\View.hpp>
 #include "system_renderer.h"
+#include "system_physics.h"
 
 using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
 static shared_ptr<Entity> coin;
-
+static shared_ptr<Entity> score;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -24,7 +27,8 @@ void Level1Scene::Load() {
  
   // Create player
   {
-    player = makeEntity();
+    player = makeEntity(true);
+	player->entityType = EntityType::PLAYER;
     player->setPosition(ls::getTilePosition(ls::findTiles(ls::START)[0]));
     auto s = player->addComponent<ShapeComponent>();
     s->setShape<sf::RectangleShape>(Vector2f(20.f, 30.f));
@@ -38,6 +42,13 @@ void Level1Scene::Load() {
 	Renderer::view.reset(sf::FloatRect(player->getPosition().x, player->getPosition().y, 1280.0f, 800.f));
 	
   }
+  //score
+  {
+	  score = makeEntity(false);
+	  score->entityType = EntityType::SCORE;
+	  score->addComponent<TextComponent>("Score: " + scorePoints);
+	  score->setPosition(Vector2f(Engine::getWindowSize().x - 200.0f, 20.0f));
+  }
 
   // Add coins
   {
@@ -50,17 +61,19 @@ void Level1Scene::Load() {
 	  for (auto c : coins) {
 		  Vector2f pos = ls::getTilePosition(c);
 		  pos += Vector2f(8.0f, 8.0f);
-		  coin = makeEntity();
+		  coin = makeEntity(true);
 		  coin->setPosition(pos);
 		  auto s = coin->addComponent<SpriteComponentAnimated>();
 		  
 		  s->addFrames(a, 5, 5, 16.0f, 16.0f, 0.0f);
 		  AnimatedSprite b(sf::seconds(0.05f), true, true);
 		  s->setSprite(b);
-		  s->getSprite().setOrigin(8.0f, 8.0f);//needs to set origin because physics create box usign center origin
+		  s->getSprite().setOrigin(8.0f, 8.0f);//needs to set origin because physics create box using center origin
 		 
 		  s->addAnimation("idle", a);
+		  coin->entityType = EntityType::COIN;
 		  coin->addComponent<PhysicsComponent>(false, Vector2f(16.0f,16.0f));
+		  coin->addComponent<CollisionComponentCoin>();
 	  }
   }
 
@@ -70,7 +83,8 @@ void Level1Scene::Load() {
     for (auto w : walls) {
       auto pos = ls::getTilePosition(w);
       pos += Vector2f(20.f, 20.f); //offset to center
-      auto e = makeEntity();
+      auto e = makeEntity(true);
+	  e->entityType = EntityType::WALL;
       e->setPosition(pos);
       e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
     }
@@ -96,14 +110,14 @@ void Level1Scene::Update(const double& dt) {
 	 
 //    Engine::ChangeScene((Scene*)&level2);
   }
- /* if (coin->get_components<PhysicsComponent>()[0]->isTouching(*player->get_components<PlayerPhysicsComponent>()[0])) {
+  /*if (coin->get_components<PhysicsComponent>()[0]->isTouching(*player->get_components<PlayerPhysicsComponent>()[0])) {
 	  cout << "yes they are !" << endl;
   }*/
-  //cout << getView().getCenter() << endl;
-  Vector2f pos1 = Vector2f(player->getPosition().x, player->getPosition().y);
-  Renderer::view.setCenter(pos1);
-  /*cout << &Renderer::view << " lv1"<< endl;
-  cout << Renderer::view.getCenter() << " lv1" << endl;*/
+  //not the cleanest way to update the score points
+  score->get_components<TextComponent>()[0]->SetText("Score " + std::to_string(scorePoints));
+  
+  Renderer::view.setCenter(player->getPosition().x, player->getPosition().y);
+  
   Scene::Update(dt);
 }
 

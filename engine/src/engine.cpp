@@ -19,6 +19,7 @@ static float loadingspinner = 0.f;
 static float loadingTime;
 static RenderWindow* _window;
 
+
 void Loading_update(float dt, const Scene* const scn) {
   //  cout << "Eng: Loading Screen\n";
   if (scn->isLoaded()) {
@@ -39,8 +40,8 @@ void Loading_render() {
   static Text t("Loading", *Resources::get<sf::Font>("RobotoMono-Regular.ttf"));
   t.setFillColor(Color(255,255,255,min(255.f,40.f*loadingTime)));
   t.setPosition(Vcast<float>(Engine::getWindowSize()) * Vector2f(0.4f,0.3f));
-  Renderer::queue(&t);
-  Renderer::queue(&octagon);
+  Renderer::queue(&t, false);//setting false (not dynamic) because loading text should not follow player movement
+  Renderer::queue(&octagon, false);
 }
 
 float frametimes[256] = {};
@@ -76,7 +77,6 @@ void Engine::Render(RenderWindow& window) {
   } else if (_activeScene != nullptr) {
     _activeScene->Render();
   }
-
   Renderer::render();
 }
 
@@ -113,13 +113,20 @@ void Engine::Start(unsigned int width, unsigned int height,
   // Render::shutdown();
 }
 
-std::shared_ptr<Entity> Scene::makeEntity() {
-  auto e = make_shared<Entity>(this);
+std::shared_ptr<Entity> Scene::makeEntity(bool dynamic) {
+  auto e = make_shared<Entity>(this, dynamic);
+ 
   ents.list.push_back(e);
+  
   return std::move(e);
 }
 
 void Engine::setVsync(bool b) { _window->setVerticalSyncEnabled(b); }
+
+Scene * Engine::getActiveScene()
+{
+	return _activeScene;
+}
 
 void Engine::ChangeScene(Scene* s) {
   cout << "Eng: changing scene: " << s << endl;
@@ -138,9 +145,22 @@ void Engine::ChangeScene(Scene* s) {
   }
 }
 
-void Scene::Update(const double& dt) { ents.update(dt); }
+void Scene::Update(const double& dt) { 
+	ents.update(dt); 
+	
+}
 
-void Scene::Render() { ents.render(); }
+void Scene::Render() { 
+	
+	ents.render(); 
+	
+}
+
+void Scene::addScore(int score)
+{
+	scorePoints += score;
+	cout << scorePoints << endl;
+}
 
 sf::View* Scene::getView()
 {
@@ -172,6 +192,7 @@ void Scene::setLoaded(bool b) {
 
 void Scene::UnLoad() {
   ents.list.clear();
+  
   textures->clear();
   setLoaded(false);
 }
@@ -200,4 +221,28 @@ long long last() {
 } // namespace timing
 
 Scene::~Scene() { UnLoad(); }
-Scene::Scene() : textures(make_shared<vector<Texture>>()) {}
+Scene::Scene() : textures(make_shared<vector<Texture>>()), scorePoints(0) {}
+
+
+void CollisionHandler::startContact(Entity * entityA, Entity * entityB)
+{
+	switch (entityA->entityType)
+	{
+	case EntityType::COIN:
+		entityA->setForDelete();
+
+		break;
+	default:
+		break;
+	}
+
+	switch (entityB->entityType)
+	{
+	case EntityType::COIN:
+		entityB->setForDelete();
+		Engine::getActiveScene()->addScore(10);
+		break;
+	default:
+		break;
+	}
+}

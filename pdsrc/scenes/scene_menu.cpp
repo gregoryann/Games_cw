@@ -16,16 +16,16 @@ void MenuScene::Load() {
   cout << "Menu Load \n";
   {
 	
-    auto title = makeEntity();
+    auto title = makeEntity(false);
     auto t = title->addComponent<TextComponent>(
         "Potato's Destiny");
-	auto newGame = makeEntity();
+	auto newGame = makeEntity(false);
 	t = newGame->addComponent<TextComponent>(
 		"New Game");
-	auto shop = makeEntity();
+	auto shop = makeEntity(false);
 	t = shop->addComponent<TextComponent>(
 		"Shop");
-	auto exit = makeEntity();
+	auto exit = makeEntity(false);
 	t = exit->addComponent<TextComponent>(
 		"Exit");
 	
@@ -33,7 +33,7 @@ void MenuScene::Load() {
 	shop->setPosition(Vector2f(200.f, 300.f));
 	exit->setPosition(Vector2f(200.f, 400.f));
 	
-	auto pointer = makeEntity();
+	auto pointer = makeEntity(false);
 	pointer->addTag("pointer");
 	pointer->addComponent<BlinkComponent>(0.5f);
 	auto s = pointer->addComponent<ShapeComponent>();
@@ -59,7 +59,7 @@ void MenuScene::Load() {
   textures->push_back(p);
   cout << &(textures->at(0)) << endl; 
   a1.setSpriteSheet(textures->at(0));//texture stored as pointer in the animation (needs an always available texture to look up)
-  auto sprite = makeEntity();
+  auto sprite = makeEntity(true);
   auto cmp = sprite->addComponent<SpriteComponentAnimated>();
   cmp->addFrames(a1, 41, 5, 640.0f, 480.0f, 0.0f);
   AnimatedSprite b(sf::seconds(0.05f), true, true);
