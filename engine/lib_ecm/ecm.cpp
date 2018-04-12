@@ -80,10 +80,10 @@ Entity::~Entity() {
         _components.end());
   }
 
-  if (_components.size() > 0) {
+  /*if (_components.size() > 0) {
     throw std::runtime_error(
         "Can't delete entity, someone is grabbing a component!");
-  }
+  }*/
 
   _components.clear();
 }
@@ -95,8 +95,10 @@ bool Component::is_fordeletion() const { return _fordeletion; }
 void EntityManager::update(double dt) {
   for (size_t i = 0; i < list.size(); i++) {
     if (list[i]->is_fordeletion()) {
-      list.erase(list.begin() + i);
+	  list[i]->Entity::~Entity();
+	  list.erase(list.begin() + i);
       --i;
+	  
       continue;
     }
     if (list[i]->_alive) {

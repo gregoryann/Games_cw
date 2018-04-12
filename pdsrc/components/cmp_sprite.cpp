@@ -3,6 +3,7 @@
 #include "system_renderer.h"
 #include <SFML/Graphics.hpp>
 using namespace std;
+using namespace sf;
 
 //sprite static
 SpriteComponent::SpriteComponent(Entity* p)
@@ -38,7 +39,9 @@ sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }
 //sprite animated
 
 SpriteComponentAnimated::SpriteComponentAnimated(Entity * p)
-	: Component(p), _sprite(make_shared<AnimatedSprite>()) {}
+	: Component(p), _sprite(make_shared<AnimatedSprite>()), _texture(make_shared<vector<Texture>>()) {
+	_texture->reserve(10);//reserving 10 spaces to avoid the reallocation of the texture inside of vector, leading to different pointers for the textures
+}
 
 void SpriteComponentAnimated::update(double dt)
 {
@@ -68,6 +71,12 @@ void SpriteComponentAnimated::render()
 	Renderer::queue(_sprite.get(), _parent->isDynamic());
 }
 
+Texture* SpriteComponentAnimated::addTexture(sf::Texture & texture)
+{
+	_texture->push_back(texture);
+	return &(_texture->back());
+}
+
 AnimatedSprite & SpriteComponentAnimated::getSprite() const
 {
 	return *_sprite;
@@ -92,3 +101,39 @@ void SpriteComponentAnimated::addAnimation(std::string key, Animation animation)
 		cout << "element " + key + " already existed" << endl;
 	}
 }
+
+SpriteComponentRepeted::SpriteComponentRepeted(Entity * p, int repetition)
+	: Component(p), _repetition(repetition), _sprite(make_shared<std::vector<sf::Sprite>>())
+	, _texture(make_shared<Texture>())
+{
+	for (int i = 0; i < _repetition; i++) {
+		_sprite->push_back(sf::Sprite());
+	}
+	
+}
+
+void SpriteComponentRepeted::update(double dt)
+{
+	for(int i = 0; i < _repetition; i++) {
+		_sprite->at(i).setPosition(_parent->getPosition());
+		_sprite->at(i).setRotation(_parent->getRotation());
+	}
+}
+
+void SpriteComponentRepeted::render()
+{
+	for(int i = 0; i < _repetition; i++){
+		float x = _parent->getPosition().x + _sprite->at(i).getLocalBounds().width * i + i*5.0f;
+		float y = _parent->getPosition().y;
+		_sprite->at(i).setPosition(x, y);
+		Renderer::queue(&_sprite->at(i), _parent->isDynamic());
+	}
+}
+
+Texture* SpriteComponentRepeted::setTexture(Texture & texture)
+{
+	*_texture = texture;
+	return &(*_texture);
+}
+
+//sf::Sprite& SpriteComponentRepeted::getSprite() const { return *_sprite; }

@@ -1,7 +1,6 @@
 #include "scene_level1.h"
 #include "../components/cmp_player_physics.h"
 #include "../components/cmp_sprite.h"
-#include "../components/cmp_coin_collision.h"
 #include "../components/cmp_text.h"
 #include "../game.h"
 #include <LevelSystem.h>
@@ -15,8 +14,10 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
-static shared_ptr<Entity> coin;
+static shared_ptr<vector<Entity>> coin;
 static shared_ptr<Entity> score;
+static shared_ptr<Entity> life;
+static shared_ptr<vector<Entity>> enemy;
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -52,28 +53,31 @@ void Level1Scene::Load() {
 
   // Add coins
   {
+	  coin = make_shared<vector<Entity>>();
 	  Texture p;
 	  p.loadFromFile("res/images/TileSet1.png");
-	  textures->push_back(p);
+	  
 	  Animation a;
-	  a.setSpriteSheet(textures->at(0));
+	  
 	  auto coins = ls::findTiles(ls::COIN);
 	  for (auto c : coins) {
 		  Vector2f pos = ls::getTilePosition(c);
 		  pos += Vector2f(8.0f, 8.0f);
-		  coin = makeEntity(true);
-		  coin->setPosition(pos);
-		  auto s = coin->addComponent<SpriteComponentAnimated>();
-		  
+		  shared_ptr<Entity> coin_temp = makeEntity(true);
+		  coin_temp->setPosition(pos);
+		  auto s = coin_temp->addComponent<SpriteComponentAnimated>();
+		  a.setSpriteSheet(*(s->addTexture(p)));//adding texture internally and giving it to the animation as well
 		  s->addFrames(a, 5, 5, 16.0f, 16.0f, 0.0f);
 		  AnimatedSprite b(sf::seconds(0.05f), true, true);
 		  s->setSprite(b);
 		  s->getSprite().setOrigin(8.0f, 8.0f);//needs to set origin because physics create box using center origin
 		 
 		  s->addAnimation("idle", a);
-		  coin->entityType = EntityType::COIN;
-		  coin->addComponent<PhysicsComponent>(false, Vector2f(16.0f,16.0f));
-		  coin->addComponent<CollisionComponentCoin>();
+		  coin_temp->entityType = EntityType::COIN;
+		  coin_temp->addComponent<PhysicsComponent>(false, Vector2f(16.0f,16.0f));
+		  
+		  coin->push_back(*coin_temp);//pushing entity in the vector of coins
+		  
 	  }
   }
 
@@ -82,24 +86,70 @@ void Level1Scene::Load() {
     auto walls = ls::findTiles(ls::WALL);
     for (auto w : walls) {
       auto pos = ls::getTilePosition(w);
-      pos += Vector2f(20.f, 20.f); //offset to center
+      pos += Vector2f(8.f, 8.f); //offset to center
       auto e = makeEntity(true);
 	  e->entityType = EntityType::WALL;
       e->setPosition(pos);
-      e->addComponent<PhysicsComponent>(false, Vector2f(40.f, 40.f));
+      e->addComponent<PhysicsComponent>(false, Vector2f(16.f, 16.f));
     }
+  }
+  //Add life
+  {
+	  Texture p;
+	  p.loadFromFile("res/images/heart.png");
+	 
+	  life = makeEntity(false);
+	  life->entityType = EntityType::LIFE;
+	  life->setPosition(Vector2f(Engine::getWindowSize().x - 200, 80));
+	  auto s = life->addComponent<SpriteComponentRepeted>(3);
+	  s->setSprite(Sprite(*(s->setTexture(p)), IntRect(0, 0, 16, 16)));
+
+  }
+
+  //Enemy
+  {
+	  enemy = make_shared<vector<Entity>>();
+	  Texture p;
+	  p.loadFromFile("res/images/TileSet1.png");
+	  //add enemy texture to "textures"
+	  
+	  Animation a;
+	  //a.setSpriteSheet(textures->at(0));
+	  auto enemies = ls::findTiles(ls::ENEMY);
+	  for (auto e : enemies) {
+		  Vector2f pos = ls::getTilePosition(e);
+		  pos += Vector2f(8.0f, 8.0f);
+		  shared_ptr<Entity> enemy_temp = makeEntity(true);
+		  enemy_temp->setPosition(pos);
+		  auto s = enemy_temp->addComponent<SpriteComponentAnimated>();
+
+		  s->addFrames(a, 10, 5, 16.0f, 16.0f, 0.0f);
+		  AnimatedSprite b(sf::seconds(0.05f), true, true);
+		  s->setSprite(b);
+		  s->getSprite().setOrigin(8.0f, 8.0f);//needs to set origin because physics create box using center origin
+		  a.setSpriteSheet(*(s->addTexture(p)));
+		  s->addAnimation("idle", a);
+		  enemy_temp->entityType = EntityType::ENEMY;
+		  enemy_temp->addComponent<PhysicsComponent>(false, Vector2f(16.0f, 16.0f));
+		  
+		  enemy->push_back(*enemy_temp);//pushing entity in the vector of enemies
+
+	  }
   }
 
   //Simulate long loading times
   //std::this_thread::sleep_for(std::chrono::milliseconds(3000));
   cout << " Scene 1 Load Done" << endl;
-
+  
   setLoaded(true);
 }
 
 void Level1Scene::UnLoad() {
   cout << "Scene 1 Unload" << endl;
   player.reset();
+  coin.reset();
+  score.reset();
+  life.reset();
   ls::unload();
   Scene::UnLoad();
 }
@@ -119,6 +169,7 @@ void Level1Scene::Update(const double& dt) {
   Renderer::view.setCenter(player->getPosition().x, player->getPosition().y);
   
   Scene::Update(dt);
+  
 }
 
 void Level1Scene::Render() {

@@ -21,7 +21,3 @@ void TextComponent::SetText(const std::string& str) {
   _text.setString(_string);
 }
 
-float TextComponent::GetFontSize()
-{
-	return _text.getCharacterSize();
-}

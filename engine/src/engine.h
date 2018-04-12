@@ -23,8 +23,6 @@ public:
 
   EntityManager ents;
   
-
-  std::shared_ptr<std::vector<sf::Texture>> textures;
 protected:
   void setLoaded(bool);
   int scorePoints;

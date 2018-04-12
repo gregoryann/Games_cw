@@ -159,7 +159,6 @@ void Scene::Render() {
 void Scene::addScore(int score)
 {
 	scorePoints += score;
-	cout << scorePoints << endl;
 }
 
 sf::View* Scene::getView()
@@ -193,7 +192,6 @@ void Scene::setLoaded(bool b) {
 void Scene::UnLoad() {
   ents.list.clear();
   
-  textures->clear();
   setLoaded(false);
 }
 
@@ -221,7 +219,7 @@ long long last() {
 } // namespace timing
 
 Scene::~Scene() { UnLoad(); }
-Scene::Scene() : textures(make_shared<vector<Texture>>()), scorePoints(0) {}
+Scene::Scene() : scorePoints(0) {}
 
 
 void CollisionHandler::startContact(Entity * entityA, Entity * entityB)
@@ -229,7 +227,14 @@ void CollisionHandler::startContact(Entity * entityA, Entity * entityB)
 	switch (entityA->entityType)
 	{
 	case EntityType::COIN:
-		entityA->setForDelete();
+		switch (entityB->entityType)
+		{
+		case EntityType::PLAYER:
+			entityA->setForDelete();
+		default:
+			break;
+		}
+		
 
 		break;
 	default:

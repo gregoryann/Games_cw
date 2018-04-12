@@ -63,8 +63,7 @@ void my_contact_listener::BeginContact(b2Contact* contact)
 	Entity* entityB = static_cast<Entity*>(contact->GetFixtureB()->GetBody()->GetUserData());
 	if (entityA != NULL && entityB != NULL) {
 		CollisionHandler::startContact(entityA, entityB);
-		//entityA->get_components<CollisionComponent>()[0];
-		entityB;
+		
 	}
 	
 }

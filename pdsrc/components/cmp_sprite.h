@@ -11,6 +11,7 @@ protected:
 	Animation* _currentAnimation;
 	std::map<std::string, Animation> _animations;
 	std::shared_ptr<AnimatedSprite> _sprite;
+	std::shared_ptr<std::vector<sf::Texture>> _texture;
 	std::string state;
 public:
 
@@ -19,7 +20,8 @@ public:
 	explicit SpriteComponentAnimated(Entity* p);
 	void update(double dt) override;
 	void render() override;
-
+	sf::Texture* addTexture(sf::Texture& texture);
+	
 	AnimatedSprite& getSprite() const;
 	void addAnimation(std::string key, Animation animation);
 	void addFrames(Animation& a, int frames, int rowlength, float width, float height, float initHeight);
@@ -47,11 +49,33 @@ public:
   }
 };
 
+class SpriteComponentRepeted : public Component {
+protected:
+	std::shared_ptr<std::vector<sf::Sprite>> _sprite;
+	std::shared_ptr<sf::Texture> _texture;
+	int _repetition; std::vector<sf::Sprite>* a = new std::vector<sf::Sprite>();
+
+public:
+	explicit SpriteComponentRepeted(Entity* p, int repetition);
+	void update(double dt) override;
+	void render() override;
+
+	//sf::Sprite& getSprite() const;
+	sf::Texture* setTexture(sf::Texture& texture);
+	//sf::Sprite& getSprite() const;
+	template <typename... Targs> void setSprite(Targs... params) {
+		Sprite s(params...);
+		_sprite.reset(new std::vector<sf::Sprite>());
+		for(int i = 0; i < _repetition; i++) {
+			_sprite->push_back(s);
+		}
+	}
+};
+
 class ShapeComponent : public Component {
 protected:
   std::shared_ptr<sf::Shape> _shape;
-  // sf::Shape _shape;
-
+ 
 public:
   ShapeComponent() = delete;
 

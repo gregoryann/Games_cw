@@ -45,7 +45,9 @@ enum EntityType
 	COIN, 
 	BULLET,
 	KEY,
-	SCORE
+	SCORE,
+	LIFE,
+	ENEMY
 };
 class Entity {
   friend struct EntityManager;
