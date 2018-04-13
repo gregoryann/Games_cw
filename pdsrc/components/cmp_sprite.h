@@ -14,7 +14,6 @@ protected:
 	std::shared_ptr<std::vector<sf::Texture>> _texture;
 	std::string state;
 public:
-
 	SpriteComponentAnimated() = delete;
 
 	explicit SpriteComponentAnimated(Entity* p);

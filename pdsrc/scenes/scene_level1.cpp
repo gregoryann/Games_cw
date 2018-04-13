@@ -14,10 +14,8 @@ using namespace std;
 using namespace sf;
 
 static shared_ptr<Entity> player;
-static shared_ptr<vector<Entity>> coin;
 static shared_ptr<Entity> score;
-static shared_ptr<Entity> life;
-static shared_ptr<vector<Entity>> enemy;
+
 
 void Level1Scene::Load() {
   cout << " Scene 1 Load" << endl;
@@ -53,14 +51,16 @@ void Level1Scene::Load() {
 
   // Add coins
   {
-	  coin = make_shared<vector<Entity>>();
 	  Texture p;
 	  p.loadFromFile("res/images/TileSet1.png");
 	  
 	  Animation a;
 	  
 	  auto coins = ls::findTiles(ls::COIN);
-	  for (auto c : coins) {
+	  
+	 
+	  for (auto c : coins){
+		  
 		  Vector2f pos = ls::getTilePosition(c);
 		  pos += Vector2f(8.0f, 8.0f);
 		  shared_ptr<Entity> coin_temp = makeEntity(true);
@@ -76,7 +76,6 @@ void Level1Scene::Load() {
 		  coin_temp->entityType = EntityType::COIN;
 		  coin_temp->addComponent<PhysicsComponent>(false, Vector2f(16.0f,16.0f));
 		  
-		  coin->push_back(*coin_temp);//pushing entity in the vector of coins
 		  
 	  }
   }
@@ -98,7 +97,7 @@ void Level1Scene::Load() {
 	  Texture p;
 	  p.loadFromFile("res/images/heart.png");
 	 
-	  life = makeEntity(false);
+	  auto life = makeEntity(false);
 	  life->entityType = EntityType::LIFE;
 	  life->setPosition(Vector2f(Engine::getWindowSize().x - 200, 80));
 	  auto s = life->addComponent<SpriteComponentRepeted>(3);
@@ -108,7 +107,7 @@ void Level1Scene::Load() {
 
   //Enemy
   {
-	  enemy = make_shared<vector<Entity>>();
+	  
 	  Texture p;
 	  p.loadFromFile("res/images/TileSet1.png");
 	  //add enemy texture to "textures"
@@ -132,7 +131,7 @@ void Level1Scene::Load() {
 		  enemy_temp->entityType = EntityType::ENEMY;
 		  enemy_temp->addComponent<PhysicsComponent>(false, Vector2f(16.0f, 16.0f));
 		  
-		  enemy->push_back(*enemy_temp);//pushing entity in the vector of enemies
+		  
 
 	  }
   }
@@ -147,9 +146,6 @@ void Level1Scene::Load() {
 void Level1Scene::UnLoad() {
   cout << "Scene 1 Unload" << endl;
   player.reset();
-  coin.reset();
-  score.reset();
-  life.reset();
   ls::unload();
   Scene::UnLoad();
 }

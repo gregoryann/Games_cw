@@ -38,6 +38,7 @@ sf::Sprite& SpriteComponent::getSprite() const { return *_sprite; }
 
 //sprite animated
 
+
 SpriteComponentAnimated::SpriteComponentAnimated(Entity * p)
 	: Component(p), _sprite(make_shared<AnimatedSprite>()), _texture(make_shared<vector<Texture>>()) {
 	_texture->reserve(10);//reserving 10 spaces to avoid the reallocation of the texture inside of vector, leading to different pointers for the textures
